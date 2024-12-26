@@ -48,7 +48,11 @@ public class UserController {
         }
     }
 
-
+    @GetMapping("/testChanges")
+    public ResponseEntity<String> testChanges(){
+        String message="Successfully Tested";
+        return ResponseEntity.ok(message);
+    }
 
 
 }
