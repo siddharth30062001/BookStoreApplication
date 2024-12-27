@@ -22,6 +22,10 @@ public class UserService {
     }
 
     public String registerUser(UserRequestDTO register) {
+        Boolean isPresent = userRepository.existsByEmailId(register.getEmailId());
+        if(isPresent) {
+            throw new IllegalArgumentException("Email already exists");
+        }
         User user=new User(register);
         userRepository.save(user);
         return "User registered successfully";
