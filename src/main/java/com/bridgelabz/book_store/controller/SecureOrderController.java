@@ -3,8 +3,11 @@ package com.bridgelabz.book_store.controller;
 
 import com.bridgelabz.book_store.dto.OrderRequestDTO;
 import com.bridgelabz.book_store.dto.OrderResponseDTO;
-import com.bridgelabz.book_store.model.Orders;
+import com.bridgelabz.book_store.exception.UnauthorizedAccessException;
 import com.bridgelabz.book_store.service.OrderService;
+import com.bridgelabz.book_store.serviceImpl.OrderServiceImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,23 +24,23 @@ public class SecureOrderController {
     }
 
     @PostMapping("/placeOrder/{cartId}")
-    public ResponseEntity<String> placeOrder(@RequestAttribute("role") String role, @RequestAttribute("userId") Long userId, @RequestBody OrderRequestDTO orderRequestDTO, @PathVariable Long cartId){
+    public ResponseEntity<OrderResponseDTO> placeOrder(@RequestAttribute("role") String role, @RequestAttribute("userId") Long userId, @RequestBody OrderRequestDTO orderRequestDTO, @PathVariable Long cartId){
 
-        if(role.equals("ADMIN")){
-            throw new IllegalArgumentException("Only User can place Order");
+        if(role.equalsIgnoreCase("ADMIN")){
+            throw new UnauthorizedAccessException("Only User can place Order");
         }
 
-        String message= orderService.placeOrder(userId,orderRequestDTO,cartId);
+        OrderResponseDTO order= orderService.placeOrder(userId,orderRequestDTO,cartId);
 
-        return ResponseEntity.ok(message);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
 
     @PutMapping("/cancelOrder/{orderId}")
     public ResponseEntity<String> cancelOrder(@RequestAttribute("role") String role,@RequestAttribute("userId") Long userId,@PathVariable Long orderId){
 
-        if(role.equals("ADMIN")){
-            throw new IllegalArgumentException("Only User can place Order");
+        if(role.equalsIgnoreCase("ADMIN")){
+            throw new UnauthorizedAccessException("Only User can place Order");
         }
 
         String message= orderService.cancelOrder(userId,orderId);
@@ -48,9 +51,9 @@ public class SecureOrderController {
 
 
     @GetMapping("/getAllOrdersByUser")
-    public List<OrderResponseDTO> getAllOrdersOfUser(@RequestAttribute("userId") Long userId){
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrdersOfUser(@RequestAttribute("userId") Long userId){
 
-           return orderService.getAllOrdersByUser(userId);
+           return  new ResponseEntity<>(orderService.getAllOrdersByUser(userId),HttpStatus.OK);
 
     }
 

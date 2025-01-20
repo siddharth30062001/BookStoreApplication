@@ -2,7 +2,9 @@ package com.bridgelabz.book_store.controller;
 
 import com.bridgelabz.book_store.dto.FeedbackRequestDTO;
 import com.bridgelabz.book_store.dto.FeedbackResponseDTO;
+import com.bridgelabz.book_store.exception.UnauthorizedAccessException;
 import com.bridgelabz.book_store.service.FeedbackService;
+import com.bridgelabz.book_store.serviceImpl.FeedbackServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,7 @@ public class SecureFeedbackController {
     @PostMapping("/addFeedback")
     public ResponseEntity<FeedbackResponseDTO> addFeedback(@RequestBody FeedbackRequestDTO feedbackRequestDTO, @RequestAttribute("userId") Long userId, @RequestAttribute("role") String role) {
         if("ADMIN".equalsIgnoreCase(role)) {
-            throw new RuntimeException("Admin cant add feedback");
+            throw new UnauthorizedAccessException("Admin cant add feedback");
         }
         return new ResponseEntity<>(feedbackService.addFeedback(userId, feedbackRequestDTO), HttpStatus.OK);
     }

@@ -24,5 +24,9 @@ public class GlobalExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<String> handelCustomException(UnauthorizedAccessException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    }
 
 }

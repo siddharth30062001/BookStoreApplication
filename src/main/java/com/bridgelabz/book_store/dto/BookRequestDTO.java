@@ -8,11 +8,11 @@ public class BookRequestDTO {
     private String bookName;
     private String author;
     private String bookDescription;
-    private byte[] logo;
+    private String logo;
     private double price;
     private long quantity;
 
-    public BookRequestDTO(String bookName, String author, String bookDescription, byte[] logo, double price, long quantity) {
+    public BookRequestDTO(String bookName, String author, String bookDescription, String logo, double price, long quantity) {
         this.bookName = bookName;
         this.author = author;
         this.bookDescription = bookDescription;
@@ -36,7 +36,7 @@ public class BookRequestDTO {
         this.bookDescription = bookDescription;
     }
 
-    public void setLogo(byte[] logo) {
+    public void setLogo(String logo) {
         this.logo = logo;
     }
 

@@ -1,9 +1,10 @@
 package com.bridgelabz.book_store.controller;
 
 import com.bridgelabz.book_store.dto.BookResponseDTO;
+import com.bridgelabz.book_store.exception.UnauthorizedAccessException;
 import com.bridgelabz.book_store.service.BookService;
-import com.bridgelabz.book_store.service.UserService;
-import com.bridgelabz.book_store.util.TokenUtility;
+import com.bridgelabz.book_store.serviceImpl.BookServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,54 +15,54 @@ import java.io.IOException;
 @RequestMapping("/filter")
 public class SecureBookController {
 
-    private final BookService bookService;
+    private final BookService bookServiceImpl;
 
-    public SecureBookController(BookService bookService){
+    public SecureBookController(BookServiceImpl bookServiceImpl){
 
-        this.bookService= bookService;
+        this.bookServiceImpl = bookServiceImpl;
     }
 
     @PutMapping("/updateBook/{bookId}")
-    public ResponseEntity<String> updateBook(@RequestAttribute("role") String role, @PathVariable Long bookId, @RequestParam String bookName, @RequestParam String author, @RequestParam String bookDescription, @RequestParam MultipartFile logo, @RequestParam double price, @RequestParam int quantity) throws IOException {
-        if(role.equals("User")){
-            throw new IllegalArgumentException("Only ADMIN can update  the book");
+    public ResponseEntity<BookResponseDTO> updateBook(@RequestAttribute("role") String role, @PathVariable Long bookId, @RequestParam String bookName, @RequestParam String author, @RequestParam String bookDescription, @RequestParam String logo, @RequestParam double price, @RequestParam int quantity) throws IOException {
+        if(role.equalsIgnoreCase("User")){
+            throw new UnauthorizedAccessException("Only ADMIN can update  the book");
         }
-        String message= bookService.updateBook(bookId,bookName,author,bookDescription,logo,price,quantity);
-        return ResponseEntity.ok(message);
+        BookResponseDTO book= bookServiceImpl.updateBook(bookId,bookName,author,bookDescription,logo,price,quantity);
+        return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteBook/{bookId}")
     public ResponseEntity<String> deleteBook(@RequestAttribute("role") String role,@PathVariable Long bookId){
-        if(role.equals("User")){
-            throw new IllegalArgumentException("Only ADMIN can delete the book");
+        if(role.equalsIgnoreCase("User")){
+            throw new UnauthorizedAccessException("Only ADMIN can delete the book");
         }
-        String message= bookService.deleteBook(bookId);
-        return ResponseEntity.ok(message);
+        String message= bookServiceImpl.deleteBook(bookId);
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
     @GetMapping("/getBook/{bookId}")
-    public BookResponseDTO getBookById(@PathVariable Long bookId){
+    public  ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long bookId){
 
-        return bookService.getBookById(bookId);
+        return new ResponseEntity<>(bookServiceImpl.getBookById(bookId),HttpStatus.OK);
     }
 
     @PutMapping("/changeBookQuantity/{bookId}")
     public ResponseEntity<String> changeBookQuantity(@RequestAttribute("role") String role,@PathVariable Long bookId, @RequestParam int quantity){
-        if(role.equals("User")){
-            throw new IllegalArgumentException("Only ADMIN can change quantity of  the book");
+        if(role.equalsIgnoreCase("User")){
+            throw new UnauthorizedAccessException("Only ADMIN can change quantity of  the book");
         }
 
-        String message= bookService.changeBookQuantity(bookId,quantity);
+        String message= bookServiceImpl.changeBookQuantity(bookId,quantity);
         return ResponseEntity.ok(message);
     }
 
     @PutMapping("/changeBookPrice/{bookId}")
     public ResponseEntity<String> changeBookPrice(@RequestAttribute("role") String role,@PathVariable Long bookId, @RequestParam double price){
-        if(role.equals("User")){
-            throw new IllegalArgumentException("Only ADMIN can change quantity of  the book");
+        if(role.equalsIgnoreCase("User")){
+            throw new UnauthorizedAccessException("Only ADMIN can change quantity of  the book");
         }
 
-        String message= bookService.changeBookPrice(bookId,price);
+        String message= bookServiceImpl.changeBookPrice(bookId,price);
         return ResponseEntity.ok(message);
     }
 }

@@ -1,10 +1,10 @@
 package com.bridgelabz.book_store.controller;
 
 
-import com.bridgelabz.book_store.dto.CartRequestDTO;
 import com.bridgelabz.book_store.dto.CartResponseDTO;
 import com.bridgelabz.book_store.service.CartService;
-import com.bridgelabz.book_store.util.TokenUtility;
+import com.bridgelabz.book_store.serviceImpl.CartServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +16,8 @@ public class CartController {
 
     private CartService cartService;
 
-    public CartController(CartService cartService){
-        this.cartService= cartService;
+    public CartController(CartService cartServiceImpl){
+        this.cartService = cartService;
     }
 
     @DeleteMapping("/removeByCartId/{cartId}")
@@ -29,8 +29,8 @@ public class CartController {
 
 
     @GetMapping("/getAllCartItems")
-    public List<CartResponseDTO> getAllCartItems(){
-        return cartService.getAllCartItems();
+    public ResponseEntity<List<CartResponseDTO>> getAllCartItems(){
+        return new ResponseEntity<>(cartService.getAllCartItems(), HttpStatus.OK);
     }
 
 }

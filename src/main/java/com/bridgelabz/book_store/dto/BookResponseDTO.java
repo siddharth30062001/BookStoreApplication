@@ -12,7 +12,7 @@ public class BookResponseDTO {
     private String bookName;
     private String author;
     private String bookDescription;
-    private byte[] logo;
+    private String logo;
     private double price;
     private long quantity;
 
@@ -48,11 +48,11 @@ public class BookResponseDTO {
         this.bookDescription = bookDescription;
     }
 
-    public byte[] getLogo() {
+    public String getLogo() {
         return logo;
     }
 
-    public void setLogo(byte[] logo) {
+    public void setLogo(String logo) {
         this.logo = logo;
     }
 
